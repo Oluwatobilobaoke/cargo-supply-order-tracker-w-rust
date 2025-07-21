@@ -39,3 +39,21 @@ pub fn get_user_input_amount(prompt: &str) -> f64 {
         get_user_input_amount(prompt)
     }
 }
+
+
+pub fn get_yes_no_input(prompt: &str) -> Result<bool, String> {
+    print!("{} (y/n): ", prompt);
+    io::stdout().flush().unwrap();
+    
+    let mut input = String::new();
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => {
+            match input.trim().to_lowercase().as_str() {
+                "y" | "yes" => Ok(true),
+                "n" | "no" => Ok(false),
+                _ => Err("Please enter 'y' or 'n'".to_string()),
+            }
+        }
+        Err(_) => Err("Failed to read input".to_string()),
+    }
+}

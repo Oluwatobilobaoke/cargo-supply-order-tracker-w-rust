@@ -201,17 +201,14 @@ pub fn cancel_order() -> Result<(), String> {
     let mut order_tracker = ORDER_TRACKER.lock().unwrap();
     let id = utils::get_user_input_number("Enter the id of the order to cancel: ");
 
-    // get the order from the order tracker and check if it is not cancelled
-    if let Some(order) = order_tracker.orders.get_mut(&id) {
-      if order.status != OrderStatus::Cancelled {
+    if utils::get_yes_no_input("Are you sure you want to cancel this order?").unwrap() {
+      if let Some(order) = order_tracker.orders.get_mut(&id) {
         order.status = OrderStatus::Cancelled;
         println!("Order cancelled successfully");
         println!("All orders count after cancellation: {:?}", order_tracker.get_orders().values().len());
       } else {
-        println!("Order already cancelled");
+        println!("Order not found");
       }
-    } else {
-      println!("Order not found");
     }
 
     Ok(())
@@ -223,11 +220,10 @@ pub fn handle_menu_choice(choice: u32) -> Result<(), String> {
         1 => add_items(),
         2 => get_orders(),
         3 => remove_fullfilled_orders(),
-        4 => println!("Edit order feature is not implemented yet"),
         5 => cancel_order(),
         6 => {
             println!("Thank you for using our system!");
-            std::process::exit(0); // Or return Ok(()) and break in main
+            std::process::exit(0);
         }
         _ => unreachable!(),
     }
